@@ -3,12 +3,15 @@ import { FileText, Image } from 'lucide-react';
 import FileUploader from './FileUploader';
 import { convertPDFToImages, getPDFMetadata } from '../utils/pdfHandler';
 
+import AdConfirmationModal from './AdConfirmationModal';
+
 export default function ConvertFeature() {
     const [file, setFile] = useState(null);
     const [metadata, setMetadata] = useState(null);
     const [format, setFormat] = useState('jpeg'); // 'jpeg' or 'png'
     const [quality, setQuality] = useState(2); // Scale factor
     const [isProcessing, setIsProcessing] = useState(false);
+    const [showAdModal, setShowAdModal] = useState(false);
 
     const handleFileSelected = async (files) => {
         const selectedFile = files[0];
@@ -24,12 +27,15 @@ export default function ConvertFeature() {
         }
     };
 
-    const handleConvert = async () => {
+    const handleConvertClick = () => {
         if (!file) {
             alert('PDF 파일을 먼저 업로드해주세요.');
             return;
         }
+        setShowAdModal(true);
+    };
 
+    const processConvert = async () => {
         setIsProcessing(true);
         try {
             await convertPDFToImages(file, {
@@ -153,7 +159,7 @@ export default function ConvertFeature() {
                         </div>
 
                         <button
-                            onClick={handleConvert}
+                            onClick={handleConvertClick}
                             disabled={isProcessing}
                             className="btn-primary w-full relative"
                         >
@@ -172,6 +178,12 @@ export default function ConvertFeature() {
                     </div>
                 </div>
             )}
+
+            <AdConfirmationModal
+                isOpen={showAdModal}
+                onClose={() => setShowAdModal(false)}
+                onConfirm={processConvert}
+            />
         </div>
     );
 }

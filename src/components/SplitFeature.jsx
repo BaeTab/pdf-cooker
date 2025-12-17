@@ -3,12 +3,15 @@ import { FileText } from 'lucide-react';
 import FileUploader from './FileUploader';
 import { splitPDF, getPDFMetadata } from '../utils/pdfHandler';
 
+import AdConfirmationModal from './AdConfirmationModal';
+
 export default function SplitFeature() {
     const [file, setFile] = useState(null);
     const [metadata, setMetadata] = useState(null);
     const [splitMode, setSplitMode] = useState('all'); // 'all' or 'range'
     const [pageRange, setPageRange] = useState('');
     const [isProcessing, setIsProcessing] = useState(false);
+    const [showAdModal, setShowAdModal] = useState(false);
 
     const handleFileSelected = async (files) => {
         const selectedFile = files[0];
@@ -18,13 +21,14 @@ export default function SplitFeature() {
             const meta = await getPDFMetadata(selectedFile);
             setMetadata(meta);
         } catch (error) {
-            alert('PDF 정보를 가져올 수 없습니다.');
+            console.error('Error loading PDF metadata:', error);
+            alert('PDF 정보를 가져올 수 없습니다. 파일이 손상되었거나 암호화되어 있을 수 있습니다.');
             setFile(null);
             setMetadata(null);
         }
     };
 
-    const handleSplit = async () => {
+    const handleSplitClick = () => {
         if (!file) {
             alert('PDF 파일을 먼저 업로드해주세요.');
             return;
@@ -35,6 +39,10 @@ export default function SplitFeature() {
             return;
         }
 
+        setShowAdModal(true);
+    };
+
+    const processSplit = async () => {
         setIsProcessing(true);
         try {
             await splitPDF(file, {
@@ -135,7 +143,7 @@ export default function SplitFeature() {
                         </div>
 
                         <button
-                            onClick={handleSplit}
+                            onClick={handleSplitClick}
                             disabled={isProcessing}
                             className="btn-primary w-full relative"
                         >
@@ -154,6 +162,12 @@ export default function SplitFeature() {
                     </div>
                 </div>
             )}
+
+            <AdConfirmationModal
+                isOpen={showAdModal}
+                onClose={() => setShowAdModal(false)}
+                onConfirm={processSplit}
+            />
         </div>
     );
 }

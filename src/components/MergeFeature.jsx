@@ -4,10 +4,12 @@ import FileUploader from './FileUploader';
 import { mergePDFs } from '../utils/pdfHandler';
 import { cn } from '../utils/cn';
 import { PDFEvents } from '../utils/analytics';
+import AdConfirmationModal from './AdConfirmationModal';
 
 export default function MergeFeature() {
     const [files, setFiles] = useState([]);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [showAdModal, setShowAdModal] = useState(false);
 
     const handleFilesSelected = (newFiles) => {
         setFiles(prev => [...prev, ...newFiles]);
@@ -35,12 +37,15 @@ export default function MergeFeature() {
         setFiles(newFiles);
     };
 
-    const handleMerge = async () => {
+    const handleMergeClick = () => {
         if (files.length < 2) {
             alert('최소 2개 이상의 PDF 파일이 필요합니다.');
             return;
         }
+        setShowAdModal(true);
+    };
 
+    const processMerge = async () => {
         const totalSize = files.reduce((sum, file) => sum + file.size, 0);
         PDFEvents.mergePDFStart(files.length);
 
@@ -124,7 +129,7 @@ export default function MergeFeature() {
                     </div>
 
                     <button
-                        onClick={handleMerge}
+                        onClick={handleMergeClick}
                         disabled={isProcessing || files.length < 2}
                         className="btn-primary w-full relative"
                     >
@@ -142,6 +147,12 @@ export default function MergeFeature() {
                     </button>
                 </div>
             )}
+
+            <AdConfirmationModal
+                isOpen={showAdModal}
+                onClose={() => setShowAdModal(false)}
+                onConfirm={processMerge}
+            />
         </div>
     );
 }
