@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { FileText, Image } from 'lucide-react';
+import { FileText, Image, Download, RotateCcw } from 'lucide-react';
 import FileUploader from './FileUploader';
 import { convertPDFToImages, getPDFMetadata } from '../utils/pdfHandler';
-
 import AdConfirmationModal from './AdConfirmationModal';
+import { saveAs } from 'file-saver';
 
 export default function ConvertFeature() {
     const [file, setFile] = useState(null);
@@ -12,10 +12,12 @@ export default function ConvertFeature() {
     const [quality, setQuality] = useState(2); // Scale factor
     const [isProcessing, setIsProcessing] = useState(false);
     const [showAdModal, setShowAdModal] = useState(false);
+    const [resultBlob, setResultBlob] = useState(null);
 
     const handleFileSelected = async (files) => {
         const selectedFile = files[0];
         setFile(selectedFile);
+        setResultBlob(null);
 
         try {
             const meta = await getPDFMetadata(selectedFile);
@@ -27,22 +29,19 @@ export default function ConvertFeature() {
         }
     };
 
-    const handleConvertClick = () => {
+    const handleConvertClick = async () => {
         if (!file) {
             alert('PDF 파일을 먼저 업로드해주세요.');
             return;
         }
-        setShowAdModal(true);
-    };
 
-    const processConvert = async () => {
         setIsProcessing(true);
         try {
-            await convertPDFToImages(file, {
+            const blob = await convertPDFToImages(file, {
                 format,
                 scale: quality,
             });
-            alert('PDF를 이미지로 변환 완료! images.zip 파일이 다운로드됩니다.');
+            setResultBlob(blob);
         } catch (error) {
             alert(error.message || 'PDF 변환 중 오류가 발생했습니다.');
         } finally {
@@ -50,9 +49,20 @@ export default function ConvertFeature() {
         }
     };
 
+    const handleDownloadClick = () => {
+        setShowAdModal(true);
+    };
+
+    const processDownload = () => {
+        if (resultBlob) {
+            saveAs(resultBlob, 'images.zip');
+        }
+    };
+
     const handleReset = () => {
         setFile(null);
         setMetadata(null);
+        setResultBlob(null);
     };
 
     return (
@@ -62,7 +72,7 @@ export default function ConvertFeature() {
                     onFilesSelected={handleFileSelected}
                     multiple={false}
                 />
-            ) : (
+            ) : !resultBlob ? (
                 <div className="card">
                     <div className="flex items-start justify-between mb-6">
                         <div className="flex items-center gap-3">
@@ -177,12 +187,42 @@ export default function ConvertFeature() {
                         </button>
                     </div>
                 </div>
+            ) : (
+                <div className="card text-center py-10 fade-in">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <Image className="w-8 h-8 text-green-600" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                        변환 완료!
+                    </h3>
+                    <p className="text-gray-600 mb-8">
+                        이미지 파일(ZIP)이 준비되었습니다. 아래 버튼을 눌러 다운로드하세요.
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button
+                            onClick={handleDownloadClick}
+                            className="btn-primary text-lg px-8 py-3 flex items-center justify-center gap-2"
+                        >
+                            <Download className="w-5 h-5" />
+                            다운로드 (images.zip)
+                        </button>
+
+                        <button
+                            onClick={handleReset}
+                            className="btn-secondary text-lg px-8 py-3 flex items-center justify-center gap-2"
+                        >
+                            <RotateCcw className="w-5 h-5" />
+                            처음으로
+                        </button>
+                    </div>
+                </div>
             )}
 
             <AdConfirmationModal
                 isOpen={showAdModal}
                 onClose={() => setShowAdModal(false)}
-                onConfirm={processConvert}
+                onConfirm={processDownload}
             />
         </div>
     );

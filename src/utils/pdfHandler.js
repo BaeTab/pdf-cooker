@@ -1,6 +1,5 @@
 import { PDFDocument } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
-import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
 // Configure PDF.js worker
@@ -9,7 +8,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 /**
  * Merge multiple PDF files into one
  * @param {File[]} files - Array of PDF files to merge
- * @returns {Promise<void>}
+ * @returns {Promise<Blob>} Merged PDF blob
  */
 export async function mergePDFs(files) {
     try {
@@ -23,8 +22,7 @@ export async function mergePDFs(files) {
         }
 
         const mergedPdfBytes = await mergedPdf.save();
-        const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
-        saveAs(blob, 'merged.pdf');
+        return new Blob([mergedPdfBytes], { type: 'application/pdf' });
     } catch (error) {
         console.error('Error merging PDFs:', error);
         throw new Error('PDF 병합 중 오류가 발생했습니다.');
@@ -37,13 +35,14 @@ export async function mergePDFs(files) {
  * @param {Object} options - Split options
  * @param {boolean} options.splitAll - Split all pages individually
  * @param {string} options.pageRange - Page range (e.g., "1,3-5")
- * @returns {Promise<void>}
+ * @returns {Promise<{blob: Blob, name: string}[]>} Array of blobs with filenames
  */
 export async function splitPDF(file, options = {}) {
     try {
         const arrayBuffer = await file.arrayBuffer();
         const pdfDoc = await PDFDocument.load(arrayBuffer);
         const totalPages = pdfDoc.getPageCount();
+        const results = [];
 
         if (options.splitAll) {
             // Split all pages individually
@@ -54,7 +53,7 @@ export async function splitPDF(file, options = {}) {
 
                 const pdfBytes = await newPdf.save();
                 const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-                saveAs(blob, `page_${i + 1}.pdf`);
+                results.push({ blob, name: `page_${i + 1}.pdf` });
             }
         } else if (options.pageRange) {
             // Extract specific pages
@@ -68,8 +67,9 @@ export async function splitPDF(file, options = {}) {
 
             const pdfBytes = await newPdf.save();
             const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            saveAs(blob, 'extracted_pages.pdf');
+            results.push({ blob, name: 'extracted_pages.pdf' });
         }
+        return results;
     } catch (error) {
         console.error('Error splitting PDF:', error);
         throw new Error('PDF 분할 중 오류가 발생했습니다.');
@@ -82,7 +82,7 @@ export async function splitPDF(file, options = {}) {
  * @param {Object} options - Conversion options
  * @param {string} options.format - Image format ('png' or 'jpeg')
  * @param {number} options.scale - Scale factor for rendering (default: 2)
- * @returns {Promise<void>}
+ * @returns {Promise<Blob>} ZIP blob
  */
 export async function convertPDFToImages(file, options = {}) {
     const { format = 'jpeg', scale = 2 } = options;
@@ -124,9 +124,8 @@ export async function convertPDFToImages(file, options = {}) {
             canvas.remove();
         }
 
-        // Generate and download zip
-        const zipBlob = await zip.generateAsync({ type: 'blob' });
-        saveAs(zipBlob, 'images.zip');
+        // Generate zip
+        return await zip.generateAsync({ type: 'blob' });
     } catch (error) {
         console.error('Error converting PDF to images:', error);
         throw new Error('PDF를 이미지로 변환하는 중 오류가 발생했습니다.');

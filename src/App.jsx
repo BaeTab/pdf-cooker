@@ -4,9 +4,10 @@ import Guide from './pages/Guide';
 import FAQ from './pages/FAQ';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
-import { Lock } from 'lucide-react';
+import { Lock, Globe } from 'lucide-react';
 import { cn } from './utils/cn';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -20,11 +21,20 @@ function ScrollToTop() {
 
 function App() {
   const location = useLocation();
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+
+  useEffect(() => {
+    document.documentElement.lang = i18n.language;
+  }, [i18n.language]);
 
   const navLinks = [
-    { name: '홈', path: '/' },
-    { name: '사용 가이드', path: '/guide' },
-    { name: 'FAQ', path: '/faq' },
+    { name: t('nav.home'), path: '/' },
+    { name: t('nav.guide'), path: '/guide' },
+    { name: t('nav.faq'), path: '/faq' },
   ];
 
   return (
@@ -47,7 +57,7 @@ function App() {
               </div>
               <div className="leading-tight">
                 <h1 className="text-xl font-bold text-gray-900">PDF Cooker</h1>
-                <p className="text-xs text-gray-500">안전한 무료 PDF 편집 도구</p>
+                <p className="text-xs text-gray-500">{t('nav.logo_subtitle')}</p>
               </div>
             </Link>
 
@@ -67,10 +77,31 @@ function App() {
               ))}
             </nav>
 
-            {/* Privacy Badge (Mobile: hidden, Desktop: visible) */}
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-full">
-              <Lock className="w-4 h-4 text-green-600" />
-              <span className="text-xs font-semibold text-green-800">100% 안전</span>
+            {/* Right Side: Language & Safe Badge */}
+            <div className="flex items-center gap-4">
+              {/* Language Switcher */}
+              <div className="flex items-center gap-2 text-sm font-medium text-gray-600">
+                <Globe className="w-4 h-4" />
+                <button
+                  onClick={() => changeLanguage('ko')}
+                  className={cn("hover:text-primary-600 transition-colors", i18n.language === 'ko' && "text-primary-600 font-bold")}
+                >
+                  KO
+                </button>
+                <span className="text-gray-300">|</span>
+                <button
+                  onClick={() => changeLanguage('en')}
+                  className={cn("hover:text-primary-600 transition-colors", i18n.language === 'en' && "text-primary-600 font-bold")}
+                >
+                  EN
+                </button>
+              </div>
+
+              {/* Privacy Badge (Mobile: hidden, Desktop: visible) */}
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-full">
+                <Lock className="w-4 h-4 text-green-600" />
+                <span className="text-xs font-semibold text-green-800">{t('nav.safe')}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -94,34 +125,34 @@ function App() {
             <div className="col-span-2">
               <h3 className="font-bold text-gray-900 mb-4">PDF Cooker</h3>
               <p className="text-sm text-gray-600 mb-4">
-                PDF Cooker는 사용자의 프라이버시를 최우선으로 생각합니다.<br />
-                서버 업로드 없이 브라우저에서 안전하게 PDF를 편집하세요.
+                {t('footer.desc_line1')}<br />
+                {t('footer.desc_line2')}
               </p>
             </div>
             <div>
-              <h3 className="font-bold text-gray-900 mb-4">기능</h3>
+              <h3 className="font-bold text-gray-900 mb-4">{t('footer.features_title')}</h3>
               <ul className="space-y-2 text-sm text-gray-600">
-                <li><Link to="/" className="hover:text-primary-600">PDF 합치기</Link></li>
-                <li><Link to="/" className="hover:text-primary-600">PDF 나누기</Link></li>
-                <li><Link to="/" className="hover:text-primary-600">PDF를 이미지로</Link></li>
+                <li><Link to="/" className="hover:text-primary-600">{t('tabs.merge')}</Link></li>
+                <li><Link to="/" className="hover:text-primary-600">{t('tabs.split')}</Link></li>
+                <li><Link to="/" className="hover:text-primary-600">{t('tabs.convert')}</Link></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-bold text-gray-900 mb-4">정보</h3>
+              <h3 className="font-bold text-gray-900 mb-4">{t('footer.info_title')}</h3>
               <ul className="space-y-2 text-sm text-gray-600">
-                <li><Link to="/guide" className="hover:text-primary-600">사용 가이드</Link></li>
-                <li><Link to="/faq" className="hover:text-primary-600">자주 묻는 질문</Link></li>
-                <li><Link to="/privacy" className="hover:text-primary-600">개인정보처리방침</Link></li>
-                <li><Link to="/terms" className="hover:text-primary-600">이용약관</Link></li>
+                <li><Link to="/guide" className="hover:text-primary-600">{t('nav.guide')}</Link></li>
+                <li><Link to="/faq" className="hover:text-primary-600">{t('nav.faq')}</Link></li>
+                <li><Link to="/privacy" className="hover:text-primary-600">{t('nav.privacy')}</Link></li>
+                <li><Link to="/terms" className="hover:text-primary-600">{t('nav.terms')}</Link></li>
               </ul>
             </div>
           </div>
           <div className="pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-gray-500">
-              © 2024 PDF Cooker. All rights reserved.
+              {t('footer.rights')}
             </p>
             <div className="flex gap-4 text-sm text-gray-500">
-              <a href="mailto:contact@pdf-cooker.web.app" className="hover:text-gray-900">문의하기</a>
+              <a href="mailto:contact@pdf-cooker.web.app" className="hover:text-gray-900">{t('footer.contact')}</a>
             </div>
           </div>
         </div>

@@ -3,35 +3,21 @@ import { FileStack, Scissors, Image, Lock } from 'lucide-react'; // Lock 추가
 import { cn } from '../utils/cn';
 import { PDFEvents } from '../utils/analytics';
 import { useSEO } from '../hooks/useSEO';
+import { useTranslation } from 'react-i18next';
 
 // Lazy load feature components
 const MergeFeature = lazy(() => import('../components/MergeFeature'));
 const SplitFeature = lazy(() => import('../components/SplitFeature'));
 const ConvertFeature = lazy(() => import('../components/ConvertFeature'));
 
-// SEO Configuration for Home tabs
-const SEO_CONFIG = {
-    merge: {
-        title: 'PDF 합치기 - 무료 온라인 PDF 병합 도구 | PDF Cooker',
-        description: '여러 개의 PDF 파일을 하나로 합치세요. 설치 없이 브라우저에서 바로 병합할 수 있습니다. 100% 무료이며 안전합니다.',
-    },
-    split: {
-        title: 'PDF 나누기 - 무료 온라인 PDF 분할 도구 | PDF Cooker',
-        description: 'PDF 파일에서 특정 페이지만 추출하거나 모든 페이지를 분리하세요. 쉽고 빠르며 서버 업로드 없이 안전하게 처리됩니다.',
-    },
-    convert: {
-        title: 'PDF를 이미지로 변환 - JPG, PNG 변환 | PDF Cooker',
-        description: 'PDF 페이지를 고화질 이미지(JPG, PNG)로 변환하고 ZIP으로 다운로드하세요. 워터마크 없는 무료 변환 도구입니다.',
-    },
-};
-
 export default function Home() {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState('merge');
 
     // Apply Dynamic SEO based on active tab
     useSEO(
-        SEO_CONFIG[activeTab].title,
-        SEO_CONFIG[activeTab].description
+        t(`seo.${activeTab}.title`),
+        t(`seo.${activeTab}.description`)
     );
 
     const handleTabChange = (tabId) => {
@@ -40,9 +26,9 @@ export default function Home() {
     };
 
     const tabs = [
-        { id: 'merge', label: 'PDF 합치기', icon: FileStack },
-        { id: 'split', label: 'PDF 나누기', icon: Scissors },
-        { id: 'convert', label: 'PDF를 이미지로', icon: Image },
+        { id: 'merge', label: t('tabs.merge'), icon: FileStack },
+        { id: 'split', label: t('tabs.split'), icon: Scissors },
+        { id: 'convert', label: t('tabs.convert'), icon: Image },
     ];
 
     return (
@@ -50,10 +36,10 @@ export default function Home() {
             {/* Intro Section */}
             <div className="text-center mb-10">
                 <h1 className="text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">
-                    모든 PDF 작업을 <span className="text-primary-600">한 곳에서</span>
+                    {t('hero.title_prefix')} <span className="text-primary-600">{t('hero.title_highlight')}</span>
                 </h1>
                 <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                    서버에 업로드하지 않아 안전합니다. 브라우저에서 바로 PDF를 합치고, 나누고, 변환하세요.
+                    {t('hero.subtitle')}
                 </p>
             </div>
 
@@ -88,11 +74,11 @@ export default function Home() {
                         <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
                     </div>
                 }>
-                    <section aria-label="기능 영역">
+                    <section aria-label={t('footer.features_title')}>
                         <h2 className="sr-only">
-                            {activeTab === 'merge' && 'PDF 파일 합치기'}
-                            {activeTab === 'split' && 'PDF 파일 나누기'}
-                            {activeTab === 'convert' && 'PDF를 이미지로 변환'}
+                            {activeTab === 'merge' && t('tabs.merge')}
+                            {activeTab === 'split' && t('tabs.split')}
+                            {activeTab === 'convert' && t('tabs.convert')}
                         </h2>
                         {activeTab === 'merge' && <MergeFeature />}
                         {activeTab === 'split' && <SplitFeature />}
@@ -107,9 +93,9 @@ export default function Home() {
                     <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
                         <Lock className="w-6 h-6 text-green-600" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">100% 안전한 보안</h3>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{t('features.secure.title')}</h3>
                     <p className="text-gray-600">
-                        파일이 서버로 전송되지 않습니다. 모든 작업은 사용자의 브라우저 내에서 로컬로 처리되어 데이터 유출 걱정이 없습니다.
+                        {t('features.secure.desc')}
                     </p>
                 </div>
 
@@ -117,9 +103,9 @@ export default function Home() {
                     <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
                         <FileStack className="w-6 h-6 text-blue-600" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">간편한 사용</h3>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{t('features.easy.title')}</h3>
                     <p className="text-gray-600">
-                        복잡한 프로그램 설치 없이 웹 브라우저만 있으면 됩니다. 직관적인 인터페이스로 누구나 쉽게 사용할 수 있습니다.
+                        {t('features.easy.desc')}
                     </p>
                 </div>
 
@@ -127,9 +113,9 @@ export default function Home() {
                     <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
                         <Scissors className="w-6 h-6 text-purple-600" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">무제한 무료</h3>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{t('features.free.title')}</h3>
                     <p className="text-gray-600">
-                        회원가입이나 결제가 필요 없습니다. 파일 크기나 횟수 제한 없이 모든 기능을 무료로 이용하세요.
+                        {t('features.free.desc')}
                     </p>
                 </div>
             </div>

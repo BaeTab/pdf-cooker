@@ -1,18 +1,21 @@
 import { useState } from 'react';
-import { ArrowUp, ArrowDown, X, FileText } from 'lucide-react';
+import { ArrowUp, ArrowDown, X, FileText, Download, RotateCcw } from 'lucide-react';
 import FileUploader from './FileUploader';
 import { mergePDFs } from '../utils/pdfHandler';
 import { cn } from '../utils/cn';
 import { PDFEvents } from '../utils/analytics';
 import AdConfirmationModal from './AdConfirmationModal';
+import { saveAs } from 'file-saver';
 
 export default function MergeFeature() {
     const [files, setFiles] = useState([]);
     const [isProcessing, setIsProcessing] = useState(false);
     const [showAdModal, setShowAdModal] = useState(false);
+    const [resultBlob, setResultBlob] = useState(null);
 
     const handleFilesSelected = (newFiles) => {
         setFiles(prev => [...prev, ...newFiles]);
+        setResultBlob(null); // Reset result when new files are added
 
         // Track file upload
         const totalSize = newFiles.reduce((sum, file) => sum + file.size, 0);
@@ -21,6 +24,7 @@ export default function MergeFeature() {
 
     const removeFile = (index) => {
         setFiles(prev => prev.filter((_, i) => i !== index));
+        setResultBlob(null);
     };
 
     const moveFile = (index, direction) => {
@@ -35,26 +39,24 @@ export default function MergeFeature() {
         const targetIndex = direction === 'up' ? index - 1 : index + 1;
         [newFiles[index], newFiles[targetIndex]] = [newFiles[targetIndex], newFiles[index]];
         setFiles(newFiles);
+        setResultBlob(null);
     };
 
-    const handleMergeClick = () => {
+    const handleMergeClick = async () => {
         if (files.length < 2) {
             alert('최소 2개 이상의 PDF 파일이 필요합니다.');
             return;
         }
-        setShowAdModal(true);
-    };
 
-    const processMerge = async () => {
+        setIsProcessing(true);
         const totalSize = files.reduce((sum, file) => sum + file.size, 0);
         PDFEvents.mergePDFStart(files.length);
 
-        setIsProcessing(true);
         try {
-            await mergePDFs(files);
+            const blob = await mergePDFs(files);
+            setResultBlob(blob);
             PDFEvents.mergePDFSuccess(files.length, totalSize);
-            alert('PDF 병합이 완료되었습니다!');
-            setFiles([]);
+            // Don't clear files immediately so user can see what they merged
         } catch (error) {
             PDFEvents.mergePDFError(error.message || 'Unknown error');
             alert(error.message || 'PDF 병합 중 오류가 발생했습니다.');
@@ -63,14 +65,33 @@ export default function MergeFeature() {
         }
     };
 
+    const handleDownloadClick = () => {
+        setShowAdModal(true);
+    };
+
+    const processDownload = () => {
+        if (resultBlob) {
+            saveAs(resultBlob, 'merged.pdf');
+            // Optional: Reset state after download if desired, 
+            // or keep it to allow multiple downloads
+        }
+    };
+
+    const handleReset = () => {
+        setFiles([]);
+        setResultBlob(null);
+    };
+
     return (
         <div className="space-y-6">
-            <FileUploader
-                onFilesSelected={handleFilesSelected}
-                multiple={true}
-            />
+            {!resultBlob && (
+                <FileUploader
+                    onFilesSelected={handleFilesSelected}
+                    multiple={true}
+                />
+            )}
 
-            {files.length > 0 && (
+            {files.length > 0 && !resultBlob && (
                 <div className="card">
                     <h3 className="text-lg font-semibold mb-4 text-gray-800">
                         업로드된 파일 ({files.length}개)
@@ -100,6 +121,7 @@ export default function MergeFeature() {
                                             index === 0 && 'opacity-30 cursor-not-allowed'
                                         )}
                                         title="위로 이동"
+                                        aria-label="위로 이동"
                                     >
                                         <ArrowUp className="w-4 h-4" />
                                     </button>
@@ -112,6 +134,7 @@ export default function MergeFeature() {
                                             index === files.length - 1 && 'opacity-30 cursor-not-allowed'
                                         )}
                                         title="아래로 이동"
+                                        aria-label="아래로 이동"
                                     >
                                         <ArrowDown className="w-4 h-4" />
                                     </button>
@@ -120,6 +143,7 @@ export default function MergeFeature() {
                                         onClick={() => removeFile(index)}
                                         className="p-2 rounded hover:bg-red-100 text-red-600 transition-colors"
                                         title="제거"
+                                        aria-label="제거"
                                     >
                                         <X className="w-4 h-4" />
                                     </button>
@@ -148,10 +172,42 @@ export default function MergeFeature() {
                 </div>
             )}
 
+            {resultBlob && (
+                <div className="card text-center py-10 fade-in">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <FileText className="w-8 h-8 text-green-600" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                        PDF 병합 완료!
+                    </h3>
+                    <p className="text-gray-600 mb-8">
+                        파일이 준비되었습니다. 아래 버튼을 눌러 다운로드하세요.
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button
+                            onClick={handleDownloadClick}
+                            className="btn-primary text-lg px-8 py-3 flex items-center justify-center gap-2"
+                        >
+                            <Download className="w-5 h-5" />
+                            다운로드 (merged.pdf)
+                        </button>
+
+                        <button
+                            onClick={handleReset}
+                            className="btn-secondary text-lg px-8 py-3 flex items-center justify-center gap-2"
+                        >
+                            <RotateCcw className="w-5 h-5" />
+                            처음으로
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <AdConfirmationModal
                 isOpen={showAdModal}
                 onClose={() => setShowAdModal(false)}
-                onConfirm={processMerge}
+                onConfirm={processDownload}
             />
         </div>
     );

@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { FileText } from 'lucide-react';
+import { FileText, Download, RotateCcw } from 'lucide-react';
 import FileUploader from './FileUploader';
 import { splitPDF, getPDFMetadata } from '../utils/pdfHandler';
-
 import AdConfirmationModal from './AdConfirmationModal';
+import { saveAs } from 'file-saver';
+import JSZip from 'jszip';
 
 export default function SplitFeature() {
     const [file, setFile] = useState(null);
@@ -12,10 +13,12 @@ export default function SplitFeature() {
     const [pageRange, setPageRange] = useState('');
     const [isProcessing, setIsProcessing] = useState(false);
     const [showAdModal, setShowAdModal] = useState(false);
+    const [results, setResults] = useState(null); // Array of { blob, name }
 
     const handleFileSelected = async (files) => {
         const selectedFile = files[0];
         setFile(selectedFile);
+        setResults(null);
 
         try {
             const meta = await getPDFMetadata(selectedFile);
@@ -28,7 +31,7 @@ export default function SplitFeature() {
         }
     };
 
-    const handleSplitClick = () => {
+    const handleSplitClick = async () => {
         if (!file) {
             alert('PDF 파일을 먼저 업로드해주세요.');
             return;
@@ -39,21 +42,38 @@ export default function SplitFeature() {
             return;
         }
 
-        setShowAdModal(true);
-    };
-
-    const processSplit = async () => {
         setIsProcessing(true);
         try {
-            await splitPDF(file, {
+            const splitResults = await splitPDF(file, {
                 splitAll: splitMode === 'all',
                 pageRange: splitMode === 'range' ? pageRange : null,
             });
-            alert('PDF 분할이 완료되었습니다!');
+            setResults(splitResults);
         } catch (error) {
             alert(error.message || 'PDF 분할 중 오류가 발생했습니다.');
         } finally {
             setIsProcessing(false);
+        }
+    };
+
+    const handleDownloadClick = () => {
+        setShowAdModal(true);
+    };
+
+    const processDownload = async () => {
+        if (!results || results.length === 0) return;
+
+        if (results.length === 1) {
+            // Single file download
+            saveAs(results[0].blob, results[0].name);
+        } else {
+            // Multiple files - zip them
+            const zip = new JSZip();
+            results.forEach(item => {
+                zip.file(item.name, item.blob);
+            });
+            const zipBlob = await zip.generateAsync({ type: 'blob' });
+            saveAs(zipBlob, 'split_pages.zip');
         }
     };
 
@@ -62,6 +82,7 @@ export default function SplitFeature() {
         setMetadata(null);
         setPageRange('');
         setSplitMode('all');
+        setResults(null);
     };
 
     return (
@@ -71,7 +92,7 @@ export default function SplitFeature() {
                     onFilesSelected={handleFileSelected}
                     multiple={false}
                 />
-            ) : (
+            ) : !results ? (
                 <div className="card">
                     <div className="flex items-start justify-between mb-6">
                         <div className="flex items-center gap-3">
@@ -161,12 +182,43 @@ export default function SplitFeature() {
                         </button>
                     </div>
                 </div>
+            ) : (
+                <div className="card text-center py-10 fade-in">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <FileText className="w-8 h-8 text-green-600" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                        PDF 분할 완료!
+                    </h3>
+                    <p className="text-gray-600 mb-8">
+                        총 {results.length}개의 파일이 준비되었습니다.<br />
+                        {results.length > 1 ? 'ZIP 파일로 한 번에 다운로드됩니다.' : '아래 버튼을 눌러 다운로드하세요.'}
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button
+                            onClick={handleDownloadClick}
+                            className="btn-primary text-lg px-8 py-3 flex items-center justify-center gap-2"
+                        >
+                            <Download className="w-5 h-5" />
+                            다운로드
+                        </button>
+
+                        <button
+                            onClick={handleReset}
+                            className="btn-secondary text-lg px-8 py-3 flex items-center justify-center gap-2"
+                        >
+                            <RotateCcw className="w-5 h-5" />
+                            처음으로
+                        </button>
+                    </div>
+                </div>
             )}
 
             <AdConfirmationModal
                 isOpen={showAdModal}
                 onClose={() => setShowAdModal(false)}
-                onConfirm={processSplit}
+                onConfirm={processDownload}
             />
         </div>
     );
