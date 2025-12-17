@@ -1,0 +1,138 @@
+{
+    "nav": {
+        "home": "Home",
+        "guide": "User Guide",
+        "faq": "FAQ",
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service",
+        "safe": "100% Safe",
+        "logo_subtitle": "Secure Free PDF Editor"
+    },
+    "hero": {
+        "title_prefix": "All PDF Tools",
+        "title_highlight": "in One Place",
+        "subtitle": "Secure processing without server uploads. Merge, split, and convert PDFs directly in your browser."
+    },
+    "tabs": {
+        "merge": "Merge PDF",
+        "split": "Split PDF",
+        "convert": "PDF to Image"
+    },
+    "features": {
+        "secure": {
+            "title": "100% Secure",
+            "desc": "Files are never sent to a server. All processing happens locally in your browser, ensuring no data leaks."
+        },
+        "easy": {
+            "title": "Easy to Use",
+            "desc": "No complex installation required, just a web browser. The intuitive interface makes it easy for anyone to use."
+        },
+        "free": {
+            "title": "Unlimited Free",
+            "desc": "No sign-up or payment needed. Use all features for free with no file size or usage limits."
+        }
+    },
+    "footer": {
+        "desc_line1": "PDF Cooker prioritizes your privacy.",
+        "desc_line2": "Edit PDFs safely in your browser without server uploads.",
+        "features_title": "Features",
+        "info_title": "Information",
+        "contact": "Contact Us",
+        "rights": "© 2024 PDF Cooker. All rights reserved."
+    },
+    "seo": {
+        "merge": {
+            "title": "Merge PDF - Free Online PDF Merger | PDF Cooker",
+            "desc": "Combine multiple PDF files into one. Merge directly in your browser without installation. 100% free and safe."
+        },
+        "split": {
+            "title": "Split PDF - Free Online PDF Splitter | PDF Cooker",
+            "desc": "Extract specific pages or split all pages from a PDF. Fast, easy, and safe processing without server uploads."
+        },
+        "convert": {
+            "title": "Convert PDF to Image - JPG, PNG Converter | PDF Cooker",
+            "desc": "Convert PDF pages to high-quality images (JPG, PNG) and download as ZIP. Free tool with no watermarks."
+        }
+    },
+    "policies": {
+        "privacy": {
+            "title": "Privacy Policy",
+            "last_updated": "Last Updated: December 14, 2024",
+            "intro": {
+                "title": "1. General Provisions",
+                "content": "PDF Cooker (\"Service\") values your privacy and is committed to protecting your personal information. This Privacy Policy explains how the Service handles your information."
+            },
+            "security": {
+                "title": "2. File Processing and Security (Most Important)",
+                "content": "PDF Cooker uses client-side technology to process all files directly within your browser. The PDF files you select are never uploaded to or stored on our servers."
+            },
+            "collection": {
+                "title": "3. Information We Collect",
+                "content1": "The Service does not require registration and does not collect personal information (name, email, phone number, etc.).",
+                "content2": "However, for service improvement and ad serving, the following non-personally identifiable information may be automatically collected:",
+                "list": [
+                    "Cookies and usage data",
+                    "IP address, browser type, visit time",
+                    "Feature usage statistics (e.g., number of merge operations) - *File content is NOT included*"
+                ]
+            },
+            "adsense": {
+                "title": "4. Cookies and Advertising (Google AdSense)",
+                "content": "This website displays ads via Google AdSense to maintain the free service. Third-party vendors, including Google, use cookies to serve ads based on your prior visits to this website.",
+                "list": [
+                    "Google uses advertising cookies to serve relevant ads to users.",
+                    "Users may opt out of personalized advertising by visiting Google Ad Settings."
+                ]
+            },
+            "analytics": {
+                "title": "5. Google Analytics",
+                "content": "We use Google Analytics to collect website traffic and user behavior information to improve our service. This data is processed anonymously and does not include personally identifiable information."
+            },
+            "contact": {
+                "title": "6. Contact Us",
+                "content": "If you have any questions about our privacy practices, please contact us at:",
+                "email": "Email: contact@pdf-cooker.web.app"
+            }
+        },
+        "terms": {
+            "title": "Terms of Service",
+            "last_updated": "Last Updated: December 14, 2024",
+            "purpose": {
+                "title": "1. Purpose",
+                "content": "These Terms govern the conditions and procedures for using all services provided by PDF Cooker (hereinafter referred to as \"Service\")."
+            },
+            "service": {
+                "title": "2. Service Provision and Changes",
+                "content": "The Service provides free tools for merging, splitting, and converting PDFs. The content of the Service may be changed or discontinued based on operational needs."
+            },
+            "disclaimer": {
+                "title": "3. Disclaimer (Limitation of Liability)",
+                "list": [
+                    "The Service is provided \"AS IS\", and we assume no liability for any results arising from the use of the Service.",
+                    "Files uploaded by the user are processed only within the user's browser. Since the Service Provider does not store original files or processed results, we are not responsible for any data loss.",
+                    "Please always back up original files separately before processing important documents."
+                ]
+            },
+            "copyright": {
+                "title": "4. Copyright",
+                "list": [
+                    "The copyright for content such as text, logos, and graphics provided by the Service belongs to the Service Provider.",
+                    "The rights to the results (processed PDFs) created by the user through the Service belong entirely to the user."
+                ]
+            },
+            "prohibited": {
+                "title": "5. Prohibited Activities",
+                "content": "Users must not use the Service to:",
+                "list": [
+                    "Process files containing malicious code or viruses",
+                    "Interfere with the normal operation of the Service (e.g., DDoS attacks)",
+                    "Unauthorized processing of documents that infringe on others' copyrights"
+                ]
+            },
+            "law": {
+                "title": "6. Governing Law",
+                "content": "These Terms shall be interpreted and governed by the laws of the Republic of Korea."
+            }
+        }
+    }
+}
