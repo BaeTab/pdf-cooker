@@ -4,6 +4,8 @@ import Guide from './pages/Guide';
 import FAQ from './pages/FAQ';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
+import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
 import { Lock, Globe } from 'lucide-react';
 import { cn } from './utils/cn';
 import { useEffect } from 'react';
@@ -34,6 +36,7 @@ function App() {
   const navLinks = [
     { name: t('nav.home'), path: '/' },
     { name: t('nav.guide'), path: '/guide' },
+    { name: t('nav.blog'), path: '/blog' },
     { name: t('nav.faq'), path: '/faq' },
   ];
 
@@ -115,6 +118,8 @@ function App() {
           <Route path="/faq" element={<FAQ />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogPost />} />
         </Routes>
       </main>
 
@@ -152,7 +157,7 @@ function App() {
               {t('footer.rights')}
             </p>
             <div className="flex gap-4 text-sm text-gray-500">
-              <a href="mailto:contact@pdf-cooker.web.app" className="hover:text-gray-900">{t('footer.contact')}</a>
+              <a href="mailto:b_h_woo@naver.com" className="hover:text-gray-900">{t('footer.contact')}</a>
             </div>
           </div>
         </div>
