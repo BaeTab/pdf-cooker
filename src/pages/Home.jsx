@@ -15,10 +15,11 @@ export default function Home() {
     const [activeTab, setActiveTab] = useState('merge');
 
     // Apply Dynamic SEO based on active tab
-    useSEO(
-        t(`seo.${activeTab}.title`),
-        t(`seo.${activeTab}.description`)
-    );
+    useSEO({
+        title: t(`seo.${activeTab}.title`),
+        description: t(`seo.${activeTab}.description`),
+        canonicalPath: ''
+    });
 
     const handleTabChange = (tabId) => {
         setActiveTab(tabId);

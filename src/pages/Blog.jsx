@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useSEO } from '../hooks/useSEO';
 import { useTranslation } from 'react-i18next';
 import { blogPosts } from '../data/blogPosts';
 import { Calendar, ChevronRight, BookOpen } from 'lucide-react';
@@ -12,6 +13,12 @@ const Blog = () => {
     const getLocalizedContent = (obj) => {
         return obj[currentLang] || obj['en'] || Object.values(obj)[0];
     };
+
+    useSEO({
+        title: currentLang === 'ko' ? '블로그 - PDF Cooker' : 'Blog - PDF Cooker',
+        description: currentLang === 'ko' ? 'PDF 활용 팁과 최신 업데이트 소식을 확인하세요.' : 'Discover tips, tutorials, and updates about PDF Cooker.',
+        canonicalPath: 'blog'
+    });
 
     return (
         <div className="max-w-5xl mx-auto px-4 py-12">

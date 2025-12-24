@@ -16,6 +16,36 @@
     <changefreq>monthly</changefreq>
   </url>
   <url>
+    <loc>https://pdf-cooker.web.app/blog</loc>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://pdf-cooker.web.app/blog/how-to-merge-pdf-files</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://pdf-cooker.web.app/blog/client-side-pdf-security</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://pdf-cooker.web.app/blog/split-large-pdf-documents</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://pdf-cooker.web.app/blog/convert-pdf-to-images</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://pdf-cooker.web.app/blog/organize-digital-workspace</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
     <loc>https://pdf-cooker.web.app/privacy</loc>
     <priority>0.5</priority>
     <changefreq>yearly</changefreq>

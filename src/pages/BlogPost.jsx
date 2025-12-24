@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useSEO } from '../hooks/useSEO';
 import { blogPosts } from '../data/blogPosts';
 import { Calendar, User, ArrowLeft, Tag } from 'lucide-react';
 
@@ -19,14 +20,32 @@ const BlogPost = () => {
         window.scrollTo(0, 0);
     }, [post, navigate]);
 
-    if (!post) return null;
+    // Calculate localized content unconditionally (or safe default) for hooks
+    // However, if !post, we return null, so hook might run with undefined if we are not careful.
+    // But hooks must run unconditionally.
+    // The previous code had "if (!post) return null;" early return.
+    // We must call hooks before that.
+
+    // Safety check for hooks execution
+    const safePost = post || { title: {}, excerpt: {}, content: {} };
 
     const getLocalizedContent = (obj) => {
-        return obj[currentLang] || obj['en'] || Object.values(obj)[0];
+        return obj[currentLang] || obj['en'] || (obj && Object.values(obj)[0]) || '';
     };
 
-    const title = getLocalizedContent(post.title);
-    const content = getLocalizedContent(post.content);
+    const title = getLocalizedContent(safePost.title);
+    const excerpt = getLocalizedContent(safePost.excerpt);
+    const content = getLocalizedContent(safePost.content);
+
+    useSEO({
+        title: title,
+        description: excerpt,
+        canonicalPath: `blog/${id}`,
+        ogType: 'article'
+    });
+
+    if (!post) return null; // Keep the early return for rendering, but hooks ran above.
+
 
     return (
         <article className="max-w-3xl mx-auto px-4 py-12">

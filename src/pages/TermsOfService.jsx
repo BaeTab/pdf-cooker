@@ -1,8 +1,16 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useSEO } from '../hooks/useSEO';
+
 export default function TermsOfService() {
     const { t } = useTranslation();
+
+    useSEO({
+        title: `${t('policies.terms.title')} - PDF Cooker`,
+        description: t('policies.terms.purpose.content'),
+        canonicalPath: 'terms'
+    });
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-12">

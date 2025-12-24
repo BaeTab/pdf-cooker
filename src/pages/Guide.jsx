@@ -3,10 +3,11 @@ import { useSEO } from '../hooks/useSEO';
 import { FileText, Monitor, CheckCircle } from 'lucide-react';
 
 export default function Guide() {
-    useSEO(
-        'PDF Cooker 사용 가이드 - PDF 병합, 분할, 변환 방법',
-        'PDF Cooker의 각 기능별 상세 사용 방법을 확인하세요. PDF 합치기, 나누기, 이미지 변환을 누구나 쉽게 따라할 수 있습니다.'
-    );
+    useSEO({
+        title: 'PDF Cooker 사용 가이드 - PDF 병합, 분할, 변환 방법',
+        description: 'PDF Cooker의 각 기능별 상세 사용 방법을 확인하세요. PDF 합치기, 나누기, 이미지 변환을 누구나 쉽게 따라할 수 있습니다.',
+        canonicalPath: 'guide'
+    });
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-12">

@@ -2,10 +2,11 @@ import React from 'react';
 import { useSEO } from '../hooks/useSEO';
 
 export default function FAQ() {
-    useSEO(
-        '자주 묻는 질문 (FAQ) - PDF Cooker 보안 및 사용법',
-        'PDF Cooker 사용 시 궁금한 점을 해결해 드립니다. 보안, 비용, 파일 크기 제한, 모바일 지원 여부 등을 확인하세요.'
-    );
+    useSEO({
+        title: '자주 묻는 질문 (FAQ) - PDF Cooker 보안 및 사용법',
+        description: 'PDF Cooker 사용 시 궁금한 점을 해결해 드립니다. 보안, 비용, 파일 크기 제한, 모바일 지원 여부 등을 확인하세요.',
+        canonicalPath: 'faq'
+    });
 
     const faqs = [
         {

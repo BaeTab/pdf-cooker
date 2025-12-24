@@ -1,8 +1,16 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useSEO } from '../hooks/useSEO';
+
 export default function PrivacyPolicy() {
     const { t } = useTranslation();
+
+    useSEO({
+        title: `${t('policies.privacy.title')} - PDF Cooker`,
+        description: t('policies.privacy.intro.content'),
+        canonicalPath: 'privacy'
+    });
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-12">
